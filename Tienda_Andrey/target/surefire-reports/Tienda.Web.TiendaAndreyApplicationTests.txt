@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: Tienda.Web.TiendaAndreyApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.623 s -- in Tienda.Web.TiendaAndreyApplicationTests
