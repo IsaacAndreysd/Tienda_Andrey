@@ -36,7 +36,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FirebaseStorageServiceImpl implements FirebaseStorageService {
-    
+    private static final String BucketName = "techshop-355cb.appspot.com";
+    private static final String rutaSuperiorStorage = "techshop";
     @Override
     public String cargarImagen(MultipartFile archivoLocalCliente, String carpeta, Long id) {
         try {
@@ -66,7 +67,7 @@ public class FirebaseStorageServiceImpl implements FirebaseStorageService {
                              String carpeta,
                              String fileName) throws IOException {
         //Se define el lugar y acceso al archivo imagen
-        ClassPathResource json = new ClassPathResource("firebase/techshop-90813.json");
+        ClassPathResource json = new ClassPathResource("firebase/techshop-355cb.json");
         BlobId blobId = BlobId.of(BucketName, rutaSuperiorStorage + "/" + carpeta + "/" + fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
                 .setContentType("image/jpg").build();
