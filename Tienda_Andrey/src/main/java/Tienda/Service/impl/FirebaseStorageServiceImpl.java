@@ -5,93 +5,103 @@
 
 package Tienda.Service.impl;
 
-import com.google.auth.Credentials;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.storage.Acl;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.BlobInfo;
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
-import Tienda.Service.FirebaseStorageService;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
  * @author isaac
  */
+
+import com.google.auth.Credentials;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.auth.oauth2.ServiceAccountCredentials;
+import com.google.cloud.storage.*;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.Storage.SignUrlOption;
+import com.google.cloud.storage.StorageOptions;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import Tienda.Service.FirebaseStorageService;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 @Service
 public class FirebaseStorageServiceImpl implements FirebaseStorageService {
-
+    
     @Override
-    public String cargarImagen(MultipartFile archivoLocalCliente, String carpeta, long id) {
+    public String cargarImagen(MultipartFile archivoLocalCliente, String carpeta, Long id) {
         try {
             // El nombre original del archivo local del cliente
             String extension = archivoLocalCliente.getOriginalFilename();
             
-            // Se genera el nuevo nombre según el código del archivo
+            // Se genera el nombre según el código del artículo
             String fileName = "img" + sacaNumero(id) + extension;
             
-            // Se convierte/sube el archivo desde el equipo local del cliente a un archivo temporal en el servidor
-            File file = this.convertToFile(archivoLocalCliente, fileName);
+            // Se convierte/sube el archivo a un archivo temporal
+            File file = this.convertToFile(archivoLocalCliente);
             
-            // Se sube el archivo temporal del servidor a Firebase y se obtiene el url válido
-            String URL = this.uploadFile(file, fileName);
+            // Se copia a Firebase y se obtiene el enlace de la imagen (por 10 años)
+            String URL = this.uploadFile(file, carpeta, fileName);
             
-            // Se elimina el archivo temporal cargas desde el cliente
+            // Se elimina el archivo temporal generado desde el cliente
             file.delete();
             
             return URL;
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
             return null;
         }
     }
-
-    private String uploadFile(File file, 
-                            String fileName) throws IOException {
-        // Se define el lugar y acceso al archivo .json
-        ClassPathResource json = new ClassPathResource(rutaJsonFile + File.separator + archivoJsonFile);
-        BlobId blobId = BlobId.of(bucketName, rutaSuperioreStorage + "/" + fileName);
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("media").build();
+    
+    private String uploadFile(File file,
+                             String carpeta,
+                             String fileName) throws IOException {
+        //Se define el lugar y acceso al archivo imagen
+        ClassPathResource json = new ClassPathResource("firebase/techshop-90813.json");
+        BlobId blobId = BlobId.of(BucketName, rutaSuperiorStorage + "/" + carpeta + "/" + fileName);
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
+                .setContentType("image/jpg").build();
         
-        // Se establecen las credenciales de acceso a Firebase
         Credentials credentials = GoogleCredentials
-                .fromStream(json.getInputStream());
-        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
-        storage.create(blobInfo, 
-                Files.readAllBytes(file.toPath()));
+                .fromStream(json.getInputStream())
+                .createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
         
-        // Se genera y retorna la URL válida 
-        String url = String.format(format, "https://firebasestorage.googleapis.com/v0/b/%s/o/%s?alt=media", bucketName, rutaSuperioreStorage + "/" + fileName);
+        Storage storage = StorageOptions.newBuilder()
+                .setCredentials(credentials).build().getService();
+        
+        storage.create(blobInfo, Files.readAllBytes(file.toPath()));
+        
+        String url = storage.signUrl(blobInfo,
+                360,
+                TimeUnit.DAYS,
+                SignUrlOption.signWith((ServiceAccountCredentials) credentials))
+                .toString();
         
         return url;
     }
-
-    // Método utilitario que convierte el archivo desde el equipo local
-    // del usuario a un archivo temporal en el servidor
+    
+    //Método utilitario que convierte el archivo desde el equipo local
+    //del usuario a un archivo temporal en el servidor
     private File convertToFile(MultipartFile archivoLocalCliente) throws IOException {
-        File tempFile = File.createTempFile("img", "img", suffix, null);
+        File tempFile = File.createTempFile("img", null);
         try (FileOutputStream fos = new FileOutputStream(tempFile)) {
             fos.write(archivoLocalCliente.getBytes());
             fos.close();
         }
         return tempFile;
     }
-
-    // Método utilitario para obtener un string con ceros....
-    private String sacaNumero(long id) {
-        return String.format("%04d", args, id);
+    
+    //Método utilitario para obtener un string con ceros....
+    private String sacaNumero(Long id) {
+        return String.format("%04d", id);
     }
 }
