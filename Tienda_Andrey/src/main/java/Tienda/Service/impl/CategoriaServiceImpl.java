@@ -6,7 +6,7 @@
 package Tienda.Service.impl;
 import Tienda.dao.CategoriaDao;
 import Tienda.domain.Categoria;
-import Tienda.service.CategoriaService;
+import Tienda.Service.CategoriaService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
