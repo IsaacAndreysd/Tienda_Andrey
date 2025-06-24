@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public interface FirebaseStorageService {
     
-    public String cargarImagen(MultipartFile archivoLocalCliente, String carpeta, Long id);
+   String cargarImagen(MultipartFile archivoLocalCliente, String carpeta, Long id);
     
     //El BucketName es el <id_del_proyecto> + ".appspot.com"
     final String bucketName = "techshop-355cb.appspot.com";
