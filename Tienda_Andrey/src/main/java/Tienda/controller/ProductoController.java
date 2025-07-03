@@ -50,7 +50,7 @@ public class ProductoController {
     }
 
     @Autowired
-    private FirebaseStorageServiceImpl firebaseStorageService;
+    private FirebaseStorageServiceImpl FirebaseStorageService;
     
     @PostMapping("/guardar")
     public String productoGuardar(Producto producto,
@@ -58,7 +58,7 @@ public class ProductoController {
         if (!imagenFile.isEmpty()) {
             productoService.save(producto);
             producto.setRutaImagen(
-                    firebaseStorageService.cargaImagen(
+                    FirebaseStorageService.cargarImagen(
                             imagenFile, 
                             "producto", 
                             producto.getIdProducto()));
