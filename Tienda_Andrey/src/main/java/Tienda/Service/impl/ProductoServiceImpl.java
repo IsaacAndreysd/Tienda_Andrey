@@ -17,6 +17,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 @Service
 public class ProductoServiceImpl implements ProductoService {
 
@@ -70,7 +75,7 @@ public class ProductoServiceImpl implements ProductoService {
     // Los métodos siguientes son para la prueba de consultas ampliadas
     @GetMapping("/listado2")
     public String listado2(Model model) {
-        var productos = productoService.getProductos(false);
+        var productos = ProductoService.getProductos(false);
         model.addAttribute("productos", productos);
         return "/pruebas/listado2";
     }
@@ -78,7 +83,7 @@ public class ProductoServiceImpl implements ProductoService {
     @PostMapping("/query1")
     public String consultaQuery1(@RequestParam(value = "precioInf") double precioInf,
                                 @RequestParam(value = "precioSup") double precioSup, Model model) {
-        var productos = productoService.findByPrecioBetweenOrderByDescripcion(precioInf, precioSup);
+        var productos = ProductoService.findByPrecioBetweenOrderByDescripcion(precioInf, precioSup);
         model.addAttribute("productos", productos);
         model.addAttribute("precioInf", precioInf);
         model.addAttribute("precioSup", precioSup);
