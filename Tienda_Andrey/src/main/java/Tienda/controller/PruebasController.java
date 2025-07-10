@@ -50,4 +50,25 @@ public class PruebasController {
         model.addAttribute("categorias", categorias);
         return "/pruebas/listado";
     }
+        @PostMapping("/query2")
+    public String consultaQuery2(@RequestParam(value = "precioInf") double precioInf,
+                                @RequestParam(value = "precioSup") double precioSup, Model model) {
+        var productos = productoService.metodoJPQL(precioInf, precioSup);
+        model.addAttribute(attributeName: "productos", attributeValue: productos);
+        model.addAttribute(attributeName: "totalProductos", attributeValue: productos.size());
+        model.addAttribute(attributeName: "precioInf", attributeValue: precioInf);
+        model.addAttribute(attributeName: "precioSup", attributeValue: precioSup);
+        return "/pruebas/listado2";
+    }
+    
+    @PostMapping("/query3")
+    public String consultaQuery3(@RequestParam(value = "precioInf") double precioInf,
+                                @RequestParam(value = "precioSup") double precioSup, Model model) {
+        var productos = productoService.metodoNativo(precioInf, precioSup);
+        model.addAttribute(attributeName: "productos", attributeValue: productos);
+        model.addAttribute(attributeName: "totalProductos", attributeValue: productos.size());
+        model.addAttribute(attributeName: "precioInf", attributeValue: precioInf);
+        model.addAttribute(attributeName: "precioSup", attributeValue: precioSup);
+        return "/pruebas/listado2";
+    }
 }

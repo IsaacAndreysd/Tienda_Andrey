@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
     <head th:fragment="head">
@@ -5,10 +11,10 @@
         <meta charset="UTF-8"/>
         <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
         <link th:href="@{/webjars/font-awesome/css/all.css}" rel="stylesheet"/>
-        <script th:src="@{/js/rutina.js}"></script>
+        <script th:src="@{/js/rutinas.js}"></script>
         <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
         <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
-        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>        
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
     </head>
     <body>
         <header th:fragment="header" class="header">
@@ -23,9 +29,26 @@
                             <li class="nav-item px-2"><a class="nav-menu-link nav-link" th:href="@{/categoria/listado}">[[#{plantilla.categorias}]]</a></li>
                             <li class="nav-item px-2"><a class="nav-menu-link nav-link" th:href="@{/producto/listado}">[[#{plantilla.productos}]]</a></li>
                             <li class="nav-item px-2"><a class="nav-menu-link nav-link" th:href="@{/usuario/listado}">[[#{plantilla.usuarios}]]</a></li>
+                            
+                            <ul class="dropdown-menu dropdown-menu-dark">
+                            <li>
+                                <a class="dropdown-item" th:href="@{/pruebas/listado}">[[#{plantilla.asociaciones}]]</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" th:href="@{/pruebas/consulta}">[[#{plantilla.consultas}]]</a>
+                            </li>
+                            </ul>
+                            <li class="nav-item px-2"><a class="nav-menu-link nav-link" th:href="@{/pruebas/listado}">[[#{plantilla.pruebas}]]</a></li>
+
                         </ul>
                         <div class="col-md-3">
-                            <ul class="navbar-nav">                                
+                            <ul class="navbar-nav">     
+                                <li>
+                                    <a class="dropdown-item" th:href="@{/pruebas/listado}">[[#{plantilla.asociaciones}]]</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" th:href="@{/pruebas/consulta}">[[#{plantilla.consultas}]]</a>
+                                </li>
                                 <li class="nav-item px-2"><a class="nav-link" th:href="@{/(lang=es)}">ES</a></li>
                                 <li class="nav-item px-2"><a class="nav-link" th:href="@{/(lang=en)}">EN</a></li>
                             </ul>
