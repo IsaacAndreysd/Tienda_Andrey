@@ -75,7 +75,7 @@ public class ProductoServiceImpl implements ProductoService {
     // Los métodos siguientes son para la prueba de consultas ampliadas
     @GetMapping("/listado2")
     public String listado2(Model model) {
-        var productos = ProductoService.getProductos(false);
+        var productos = this.getProductos(false);
         model.addAttribute("productos", productos);
         return "/pruebas/listado2";
     }
@@ -83,7 +83,8 @@ public class ProductoServiceImpl implements ProductoService {
     @PostMapping("/query1")
     public String consultaQuery1(@RequestParam(value = "precioInf") double precioInf,
                                 @RequestParam(value = "precioSup") double precioSup, Model model) {
-        var productos = ProductoService.findByPrecioBetweenOrderByDescripcion(precioInf, precioSup);
+        var productos = productoDao.findByPrecioBetweenOrderByDescripcion(precioInf, precioSup);
+
         model.addAttribute("productos", productos);
         model.addAttribute("precioInf", precioInf);
         model.addAttribute("precioSup", precioSup);
