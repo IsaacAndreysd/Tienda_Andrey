@@ -47,7 +47,7 @@ public class UsuarioController {
         if (!imagenFile.isEmpty()) {
             usuarioService.save(usuario,false);
             usuario.setRutaImagen(
-                    firebaseStorageService.cargaImagen(
+                    firebaseStorageService.cargarImagen(
                             imagenFile,
                             "usuario",
                             usuario.getIdUsuario()));
